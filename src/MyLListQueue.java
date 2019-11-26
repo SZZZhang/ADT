@@ -18,7 +18,7 @@ public class MyLListQueue implements LListQueue {
 
     @Override
     public int size() {
-        return 0;
+        return list.size();
     }
 
     @Override

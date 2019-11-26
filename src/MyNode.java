@@ -33,14 +33,4 @@ public class MyNode<T> implements Node<T> {
     public Node<T> getPrev() {
         return prev;
     }
-
-    public static void main(String[] args) {
-        MyNode<Integer> node = new MyNode<>();
-        node.setValue(1);
-
-        MyNode<Integer> node2 = new MyNode<>();
-        node.setValue(2);
-        node.setPrev(node);
-
-    }
 }

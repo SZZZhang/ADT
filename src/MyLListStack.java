@@ -1,31 +1,30 @@
 public class MyLListStack implements LListStack {
 
-    MyLinkedList list = new MyLinkedList();
+    MyLinkedList stack = new MyLinkedList();
 
     @Override
     public void push(Node n) {
-        list.addNode(n);
+        stack.addNode(n);
     }
 
     @Override
     public Node pop() {
-        Node deletedNode = list.removeNode(list.size());
-        return null;
+        return stack.removeNode(stack.size());
     }
 
     @Override
     public Node peek() {
-        return list.getLastNode();
+        return stack.getLastNode();
     }
 
     @Override
     public int size() {
-        return list.size();
+        return stack.size();
     }
 
     @Override
     public boolean isEmpty() {
-        if (list.size() == 0) return true;
+        if (stack.size() == 0) return true;
         return false;
     }
 }

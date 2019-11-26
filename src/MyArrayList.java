@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class MyArrayList implements ArrayList {
 
     private int DEFAULT_ARRAY_SIZE = 8;
@@ -22,6 +20,7 @@ public class MyArrayList implements ArrayList {
             doubleArraySize();
         }
         array[i] = n;
+        size++;
     }
 
     @Override
@@ -31,6 +30,7 @@ public class MyArrayList implements ArrayList {
                 removeNode(i);
             }
         }
+        size--;
     }
 
     @Override
@@ -39,6 +39,7 @@ public class MyArrayList implements ArrayList {
         for (int j = i; j < size; j++) {
             array[j] = array[j + 1];
         }
+        size--;
         return n;
     }
 
