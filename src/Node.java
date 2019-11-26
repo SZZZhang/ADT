@@ -1,31 +1,29 @@
-public class Node implements Interfaces.Node {
+public interface Node<T> {
 
-    Object value;
-    Interfaces.Node next;
-    Interfaces.Node prev;
+	public T getValue();
 
-    @Override
-    public Object getValue() {
-        return value;
-    }
+	public void setValue(T n);
+	
+	/*
+	 * Sets the next node reference
+	 */
+	public void setNext(Node<T> n);
+	
+	/*
+	 * Sets the previous node reference
+	 */
+	public void setPrev(Node<T> n);
+	
+	/*
+	 * Returns a reference to the next node
+	 */
+	public Node<T> getNext();
+	
+	/*
+	 * Returns a reference to the previous node
+	 */
+	public Node<T> getPrev();
+	
+	public String toString();
 
-    @Override
-    public void setNext(Interfaces.Node n) {
-        next = n;
-    }
-
-    @Override
-    public void setPrev(Interfaces.Node n) {
-        prev = n;
-    }
-
-    @Override
-    public Interfaces.Node getNext() {
-        return next;
-    }
-
-    @Override
-    public Interfaces.Node getPrev() {
-        return prev;
-    }
 }

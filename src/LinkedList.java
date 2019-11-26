@@ -1,6 +1,6 @@
-public interface ArrayList<T> {
+public interface LinkedList<T> {
 	/**
-	 * Adds a node to the end of this array list.
+	 * Adds a node to the end of this linked list.
 	 * @param n
 	 */
 	public void addNode(Node<T> n);
@@ -11,17 +11,17 @@ public interface ArrayList<T> {
 	public void insertNode(Node<T> n, int i);
 
 	/*
-	 * Removes a given node from the array list
+	 * Removes a given node from the linked list
 	 */
 	public void removeNode(Node<T> n);
 
 	/*
-	 * Removes the ith node from the array list and return it
+	 * Removes the ith node from the linked list and return it
 	 */
 	public Node<T> removeNode(int i);
 
 	/*
-	 * Returns the ith node from the array list
+	 * Returns the ith node from the linked list
 	 */
 	public Node<T> getNode(int i);
 
@@ -32,7 +32,8 @@ public interface ArrayList<T> {
 	public int size();
 
 	/*
-	 * Returns a String representation of this array list, each node is separated by a space
+	 * Returns a String representation of this linked list, each node is separated by a space
 	 */
 	public String toString();
+
 }
