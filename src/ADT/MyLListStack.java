@@ -1,3 +1,5 @@
+package ADT;
+
 public class MyLListStack implements LListStack {
 
     MyLinkedList stack = new MyLinkedList();

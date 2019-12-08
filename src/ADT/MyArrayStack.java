@@ -1,3 +1,5 @@
+package ADT;
+
 public class MyArrayStack implements ArrayStack {
 
     MyArrayList stack = new MyArrayList();

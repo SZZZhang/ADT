@@ -1,4 +1,7 @@
-public interface LListQueue<T> {
+package ADT;
+
+public interface ArrayQueue<T> {
+
 	/*
 	 * Inserts a node at the end of the queue
 	 */

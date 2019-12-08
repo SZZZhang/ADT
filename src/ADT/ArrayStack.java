@@ -1,3 +1,5 @@
+package ADT;
+
 public interface ArrayStack<T> {
 	/**
 	 * Implements a LIFO stack using an array

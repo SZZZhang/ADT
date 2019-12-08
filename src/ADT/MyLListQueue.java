@@ -1,3 +1,5 @@
+package ADT;
+
 public class MyLListQueue implements LListQueue {
     MyLinkedList list = new MyLinkedList();
 

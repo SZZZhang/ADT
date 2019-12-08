@@ -1,3 +1,5 @@
+package ADT;
+
 public class MyArrayList implements ArrayList {
 
     private int DEFAULT_ARRAY_SIZE = 8;

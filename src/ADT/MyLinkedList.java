@@ -1,3 +1,5 @@
+package ADT;
+
 public class MyLinkedList implements LinkedList {
 
     private MyNode head = new MyNode();
@@ -11,6 +13,7 @@ public class MyLinkedList implements LinkedList {
 
     @Override
     public void addNode(Node n) {
+        tail.getPrev().setNext(n);
         n.setPrev(tail.getPrev());
         tail.setPrev(n);
         n.setNext(tail);
@@ -21,7 +24,9 @@ public class MyLinkedList implements LinkedList {
     public void insertNode(Node n, int i) {
         n.setPrev(getNode(i));
         n.setNext(getNode(i).getNext());
+
         getNode(i).setNext(n);
+        getNode(i).getNext().setPrev(n);
         size++;
     }
 
@@ -68,5 +73,18 @@ public class MyLinkedList implements LinkedList {
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public String toString() {
+        Node currentNode = head;
+        String string = "";
+
+        for (int i = 0; i < size; i++){
+            currentNode = currentNode.getNext();
+            string += currentNode.toString();
+        }
+        return string;
+
     }
 }

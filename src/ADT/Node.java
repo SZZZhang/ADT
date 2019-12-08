@@ -1,3 +1,5 @@
+package ADT;
+
 public interface Node<T> {
 
 	public T getValue();

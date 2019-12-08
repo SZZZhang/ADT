@@ -1,3 +1,5 @@
+package ADT;
+
 public class MyArrayQueue implements ArrayQueue {
 
     MyArrayList queue = new MyArrayList();

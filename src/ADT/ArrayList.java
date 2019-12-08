@@ -1,3 +1,5 @@
+package ADT;
+
 public interface ArrayList<T> {
 	/**
 	 * Adds a node to the end of this array list.
@@ -6,7 +8,7 @@ public interface ArrayList<T> {
 	public void addNode(Node<T> n);
 
 	/*
-	 * Insert a Node n at the ith position of this list
+	 * Insert a ADT.Node n at the ith position of this list
 	 */
 	public void insertNode(Node<T> n, int i);
 

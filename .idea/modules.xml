@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ADT.iml" filepath="$PROJECT_DIR$/ADT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ADTGraph.iml" filepath="$PROJECT_DIR$/ADTGraph.iml" />
     </modules>
   </component>
 </project>

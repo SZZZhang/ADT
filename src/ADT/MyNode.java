@@ -1,8 +1,18 @@
+package ADT;
+
 public class MyNode<T> implements Node<T> {
 
     private T value;
     Node<T> prev;
     Node<T> next;
+
+    MyNode(T value) {
+        this.value = value;
+    }
+
+    MyNode(){
+
+    };
 
     @Override
     public T getValue() {
@@ -32,5 +42,10 @@ public class MyNode<T> implements Node<T> {
     @Override
     public Node<T> getPrev() {
         return prev;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

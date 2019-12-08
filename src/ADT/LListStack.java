@@ -1,3 +1,5 @@
+package ADT;
+
 public interface LListStack<T> {
 	/**
 	 * Implements a LIFO stack using a linked list
