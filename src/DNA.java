@@ -1,5 +1,6 @@
 import ADT.MyLListQueue;
 import ADT.MyNode;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -19,9 +20,14 @@ public class DNA {
     private int M; //max number of mutations
     private int G; //number of genes of test
 
-    String valid[]; //list of all valid genes
-    String diseased[]; //list of all diseased genes
-    String allGenes[]; //list of all genes (valid and diseased)
+    private String[] valid; //list of all valid genes
+    private String[] diseased; //list of all diseased genes
+    private String[] allGenes; //list of all genes (valid and diseased)
+
+    private double[] prob; // probability to get from the start gene to any other gene
+    private boolean[] vis; //whether a gene has been visited
+    private int[] mutations; //number of mutations to get to any gene from starting gene
+    private MyLListQueue<MyNode<Integer>> queue; //queue for bfs
 
     double graph[][];
 
@@ -52,26 +58,34 @@ public class DNA {
         int st = binSearch(initial);
         int end = binSearch(mutated);
 
-        MyLListQueue<MyNode<Integer>> queue = new MyLListQueue<>();
+        queue = new MyLListQueue<>();
         queue.enqueue(new MyNode<>(st));
 
-        boolean vis[] = new boolean[totalGeneNumber];
-        int mutations[] = new int[totalGeneNumber]; //number of mutations to get to any gene from starting gene
-        double prob[] = new double[totalGeneNumber];
+        vis = new boolean[totalGeneNumber];
+        mutations = new int[totalGeneNumber];
+        prob = new double[totalGeneNumber];
 
-        prob[st] = 100;
+        prob[st] = 1;
         vis[st] = true;
 
         while (!queue.isEmpty()) {
 
             int gene = Integer.parseInt(queue.dequeue().getValue().toString());
 
-            for (int g = 0; g < totalGeneNumber; g++) {
+            ruleThree(gene);
+            ruleTwo(gene);
+            ruleOne(gene);
+
+            if(vis[end]) {
+                System.out.println("YES");
+                System.out.println(prob[end]);
+                return;
+            }
+            /*for (int g = 0; g < totalGeneNumber; g++) {
                 if (graph[gene][g] != 0 && !vis[g]) {
                     if (graph[gene][g] > 0 && !vis[g]) {
                         if (g == end && mutations[gene] + 1 <= M) {
-                            System.out.println("YES");
-                            System.out.println(prob[gene] * graph[gene][g] * 0.01);
+
 
                             return;
                         }
@@ -81,12 +95,74 @@ public class DNA {
                     prob[g] = prob[gene] * graph[gene][g];
                     queue.enqueue(new MyNode<>(g));
                 }
-            }
+            }*/
         }
 
         System.out.println("NO");
 
     }
+
+    private void ruleOne(int geneId) {
+        String gene = allGenes[geneId];
+
+        String mutated = gene.charAt(gene.length() - 1)
+                + gene.substring(1, gene.length() - 1)
+                + gene.charAt(0);
+        int mutatedId = binSearch(mutated);
+
+        //if mutated gene is found
+        if (mutatedId != -1 && !vis[mutatedId]) {
+            prob[mutatedId] = prob[geneId] * PROBABILITY_ONE;
+            vis[mutatedId] = true;
+            mutations[mutatedId] = mutations[geneId] + 1;
+            queue.enqueue(new MyNode<>(mutatedId));
+        }
+    }
+
+    private void ruleTwo(int geneId) {
+        String gene = allGenes[geneId];
+
+        for (int c = 0; c < gene.length() - 1; c++) {
+            if (gene.charAt(c) == gene.charAt(c + 1)) {
+                for (char base : BASES) {
+                    String mutated = gene.substring(0, c) + base + gene.substring(c + 2);
+                    int mutatedId = binSearch(mutated);
+
+                    //if mutated gene is found
+                    if (mutatedId != -1) {
+                        prob[mutatedId] = prob[geneId] * PROBABILITY_TWO;
+                        vis[mutatedId] = true;
+                        mutations[mutatedId] = mutations[geneId] + 1;
+                        queue.enqueue(new MyNode<>(mutatedId));
+                    }
+                }
+            }
+        }
+    }
+
+    private void ruleThree(int geneId) {
+        String gene = allGenes[geneId];
+
+        for (int c = 0; c < gene.length() - 1; c++) {
+            if ((gene.charAt(c) == 'G' && gene.charAt(c + 1) == 'T') ||
+                    (gene.charAt(c) == 'T' && gene.charAt(c + 1) == 'G')) {
+                for (char base : BASES) {
+                    String mutated = gene.substring(0, c + 1) + base + gene.substring(c + 1);
+                    int mutatedId = binSearch(mutated);
+
+                    //if mutated gene is found
+                    if (mutatedId != -1) {
+                        prob[mutatedId] = prob[geneId] * PROBABILITY_THREE;
+                        vis[mutatedId] = true;
+                        mutations[mutatedId] = mutations[geneId] + 1;
+                        queue.enqueue(new MyNode<>(mutatedId));
+
+                    }
+                }
+            }
+        }
+    }
+
 
     private void createGraph() {
         graph = new double[totalGeneNumber][totalGeneNumber];
@@ -173,7 +249,7 @@ public class DNA {
             }
             Arrays.sort(allGenes);
 
-            createGraph();
+            //createGraph();
 
             M = scan.nextInt();
             G = scan.nextInt();
