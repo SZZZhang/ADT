@@ -1,6 +1,6 @@
 package ADT;
 
-public class MyLListQueue implements LListQueue {
+public class MyLListQueue<T> implements LListQueue {
     MyLinkedList list = new MyLinkedList();
 
     @Override

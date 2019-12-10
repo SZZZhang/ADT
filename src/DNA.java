@@ -1,6 +1,5 @@
 import ADT.MyLListQueue;
 import ADT.MyNode;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -26,10 +25,9 @@ public class DNA {
 
     double graph[][];
 
-
     //Binary search to return the index of the gene it looks for. Returns -1 if gene is not found
     private int binSearch(String gene) {
-        int high = allGenes.length, low = 0;
+        int high = allGenes.length - 1, low = 0;
 
         while (low <= high) {
             int mid = (high + low) / 2;
@@ -54,8 +52,39 @@ public class DNA {
         int st = binSearch(initial);
         int end = binSearch(mutated);
 
-        MyLListQueue queue = new MyLListQueue();
-        queue.enqueue(new MyNode());
+        MyLListQueue<MyNode<Integer>> queue = new MyLListQueue<>();
+        queue.enqueue(new MyNode<>(st));
+
+        boolean vis[] = new boolean[totalGeneNumber];
+        int mutations[] = new int[totalGeneNumber]; //number of mutations to get to any gene from starting gene
+        double prob[] = new double[totalGeneNumber];
+
+        prob[st] = 100;
+        vis[st] = true;
+
+        while (!queue.isEmpty()) {
+
+            int gene = Integer.parseInt(queue.dequeue().getValue().toString());
+
+            for (int g = 0; g < totalGeneNumber; g++) {
+                if (graph[gene][g] != 0 && !vis[g]) {
+                    if (graph[gene][g] > 0 && !vis[g]) {
+                        if (g == end && mutations[gene] + 1 <= M) {
+                            System.out.println("YES");
+                            System.out.println(prob[gene] * graph[gene][g] * 0.01);
+
+                            return;
+                        }
+                    }
+                    vis[g] = true;
+                    mutations[g] = mutations[gene] + 1;
+                    prob[g] = prob[gene] * graph[gene][g];
+                    queue.enqueue(new MyNode<>(g));
+                }
+            }
+        }
+
+        System.out.println("NO");
 
     }
 
@@ -102,7 +131,7 @@ public class DNA {
             for (int c = 0; c < gene.length() - 1; c++) {
                 if ((gene.charAt(c) == 'G' && gene.charAt(c + 1) == 'T') ||
                         (gene.charAt(c) == 'T' && gene.charAt(c + 1) == 'G')) {
-                    for(char base: BASES) {
+                    for (char base : BASES) {
                         String mutated3 = gene.substring(0, c + 1) + base + gene.substring(c + 1);
                         int mutated3Id = binSearch(mutated3);
 
@@ -117,10 +146,12 @@ public class DNA {
         }
     }
 
-    private void input() {
+    private void findProbability() {
 
         try {
-            File data = new File("DATA.TXT");
+            long startTime = System.nanoTime();
+
+            File data = new File("Test.txt");
             Scanner scan = new Scanner(data);
 
             L = scan.nextInt();
@@ -136,7 +167,7 @@ public class DNA {
                 valid[i] = scan.next();
                 allGenes[i] = valid[i];
             }
-            for (int i = 0; i < V; i++) {
+            for (int i = 0; i < D; i++) {
                 diseased[i] = scan.next();
                 allGenes[V + i] = diseased[i];
             }
@@ -152,14 +183,16 @@ public class DNA {
                 String Q = scan.next();
                 bfs(P, Q);
             }
+
+            System.out.println((System.nanoTime() - startTime) * 1E-9);
         } catch (FileNotFoundException e) {
             System.out.println("File not found :(, error: " + e);
         }
-
     }
 
     public static void main(String[] args) {
-
+        DNA dna = new DNA();
+        dna.findProbability();
     }
 
 }

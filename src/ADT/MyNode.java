@@ -6,11 +6,11 @@ public class MyNode<T> implements Node<T> {
     Node<T> prev;
     Node<T> next;
 
-    MyNode(T value) {
+    public MyNode(T value) {
         this.value = value;
     }
 
-    MyNode(){
+    public MyNode(){
 
     };
 
