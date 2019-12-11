@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class DNA {
 
+    //constants
     private char BASES[] = {'A', 'G', 'C', 'T'};
     private double PROBABILITY_ONE = 0.02; //probability of rule one
     private double PROBABILITY_TWO = 0.06; //probability of rule two
@@ -16,9 +17,10 @@ public class DNA {
     private int L; //max length of any gene
     private int V; //number of valid genes
     private int D; //number of diseased genes
-    private int totalGeneNumber; //number of valid and diseased genes
     private int M; //max number of mutations
     private int G; //number of genes of test
+
+    private int totalGenes; //number of valid and diseased genes
 
     private String[] valid; //list of all valid genes
     private String[] diseased; //list of all diseased genes
@@ -58,52 +60,79 @@ public class DNA {
         int st = binSearch(initial);
         int end = binSearch(mutated);
 
+        vis = new boolean[totalGenes];
+        mutations = new int[totalGenes];
+        prob = new double[totalGenes];
         queue = new MyLListQueue<>();
-        queue.enqueue(new MyNode<>(st));
 
-        vis = new boolean[totalGeneNumber];
-        mutations = new int[totalGeneNumber];
-        prob = new double[totalGeneNumber];
+        //if initial gene is valid or diseased
+        if (st != -1) {
+            prob[st] = 1;
+            vis[st] = true;
+            queue.enqueue(new MyNode<>(st));
+        }
 
-        prob[st] = 1;
-        vis[st] = true;
+        //if initial gene is not valid or diseased
+        if (st == -1) {
+            int geneProbability = 1, geneMutations = 0;
+
+            if (initial.length() > 1) {
+                if (initial.length() + 1 <= L) {
+                    rule3(initial, geneProbability, geneMutations);
+                }
+                rule2(initial, geneProbability, geneMutations);
+            }
+            rule1(initial, geneProbability, geneMutations);
+        }
+
+        //if mutated gene is not valid or diseased
+        if (end == -1) {
+            System.out.println("NO");
+            return;
+        }
+
+        //if initial gene is the same as the mutated gene
+        if (st == end) {
+            System.out.println("YES\n100");
+            return;
+        }
+
 
         while (!queue.isEmpty()) {
 
-            int gene = Integer.parseInt(queue.dequeue().getValue().toString());
+            int geneId = Integer.parseInt(queue.dequeue().getValue().toString());
 
-            ruleThree(gene);
-            ruleTwo(gene);
-            ruleOne(gene);
+            if (mutations[geneId] + 1 > M) {
+                System.out.println("NO");
+                return;
+            }
 
-            if(vis[end]) {
+            if (allGenes[geneId].length() > 1) {
+                if (allGenes[geneId].length() + 1 <= L) {
+                    rule3(allGenes[geneId], prob[geneId], mutations[geneId]);
+                }
+                rule2(allGenes[geneId], prob[geneId], mutations[geneId]);
+            }
+            rule1(allGenes[geneId], prob[geneId], mutations[geneId]);
+
+            if (vis[end]) {
                 System.out.println("YES");
                 System.out.println(prob[end]);
                 return;
             }
-            /*for (int g = 0; g < totalGeneNumber; g++) {
-                if (graph[gene][g] != 0 && !vis[g]) {
-                    if (graph[gene][g] > 0 && !vis[g]) {
-                        if (g == end && mutations[gene] + 1 <= M) {
-
-
-                            return;
-                        }
-                    }
-                    vis[g] = true;
-                    mutations[g] = mutations[gene] + 1;
-                    prob[g] = prob[gene] * graph[gene][g];
-                    queue.enqueue(new MyNode<>(g));
-                }
-            }*/
         }
 
         System.out.println("NO");
 
     }
 
-    private void ruleOne(int geneId) {
-        String gene = allGenes[geneId];
+    /*The following three methods and finds all the possible mutations of a given gene
+    using rule one, two, or three. They take the parameters a gene, and the probability
+    and number of mutations it takes to get from the initial gene to that gene.
+    */
+
+    //finds mutations of gene using rule 1
+    private void rule1(String gene, double geneProb, int geneMutations) {
 
         String mutated = gene.charAt(gene.length() - 1)
                 + gene.substring(1, gene.length() - 1)
@@ -112,15 +141,15 @@ public class DNA {
 
         //if mutated gene is found
         if (mutatedId != -1 && !vis[mutatedId]) {
-            prob[mutatedId] = prob[geneId] * PROBABILITY_ONE;
+            prob[mutatedId] = geneProb * PROBABILITY_ONE;
             vis[mutatedId] = true;
-            mutations[mutatedId] = mutations[geneId] + 1;
+            mutations[mutatedId] = geneMutations + 1;
             queue.enqueue(new MyNode<>(mutatedId));
         }
     }
 
-    private void ruleTwo(int geneId) {
-        String gene = allGenes[geneId];
+    //finds mutations of gene using rule 2
+    private void rule2(String gene, double geneProb, int geneMutations) {
 
         for (int c = 0; c < gene.length() - 1; c++) {
             if (gene.charAt(c) == gene.charAt(c + 1)) {
@@ -130,9 +159,9 @@ public class DNA {
 
                     //if mutated gene is found
                     if (mutatedId != -1) {
-                        prob[mutatedId] = prob[geneId] * PROBABILITY_TWO;
+                        prob[mutatedId] = geneProb * PROBABILITY_TWO;
                         vis[mutatedId] = true;
-                        mutations[mutatedId] = mutations[geneId] + 1;
+                        mutations[mutatedId] = geneMutations + 1;
                         queue.enqueue(new MyNode<>(mutatedId));
                     }
                 }
@@ -140,8 +169,8 @@ public class DNA {
         }
     }
 
-    private void ruleThree(int geneId) {
-        String gene = allGenes[geneId];
+    //finds mutations of gene using rule 3
+    private void rule3(String gene, double geneProb, int geneMutations) {
 
         for (int c = 0; c < gene.length() - 1; c++) {
             if ((gene.charAt(c) == 'G' && gene.charAt(c + 1) == 'T') ||
@@ -152,9 +181,9 @@ public class DNA {
 
                     //if mutated gene is found
                     if (mutatedId != -1) {
-                        prob[mutatedId] = prob[geneId] * PROBABILITY_THREE;
+                        prob[mutatedId] = geneProb * PROBABILITY_THREE;
                         vis[mutatedId] = true;
-                        mutations[mutatedId] = mutations[geneId] + 1;
+                        mutations[mutatedId] = geneMutations + 1;
                         queue.enqueue(new MyNode<>(mutatedId));
 
                     }
@@ -163,11 +192,10 @@ public class DNA {
         }
     }
 
-
     private void createGraph() {
-        graph = new double[totalGeneNumber][totalGeneNumber];
+        graph = new double[totalGenes][totalGenes];
 
-        for (int geneId = 0; geneId < totalGeneNumber; geneId++) {
+        for (int geneId = 0; geneId < totalGenes; geneId++) {
             String gene = allGenes[geneId];
             //rule one
             String mutated1 = gene.charAt(gene.length() - 1)
@@ -227,17 +255,17 @@ public class DNA {
         try {
             long startTime = System.nanoTime();
 
-            File data = new File("Test.txt");
+            File data = new File("DATA.txt");
             Scanner scan = new Scanner(data);
 
             L = scan.nextInt();
             V = scan.nextInt();
             D = scan.nextInt();
-            totalGeneNumber = D + V;
+            totalGenes = D + V;
 
             valid = new String[V];
             diseased = new String[D];
-            allGenes = new String[totalGeneNumber];
+            allGenes = new String[totalGenes];
 
             for (int i = 0; i < V; i++) {
                 valid[i] = scan.next();
